@@ -1,0 +1,143 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <title>PEC2_Weather_300x250</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="ad.size" content="width=300,height=250">
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            border: 0;
+            font: 16px "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        }
+
+        #location {
+            color: #fff;
+            opacity: 1;
+            position: absolute;
+            float: right;
+            width: 140px;
+            text-align: left;
+            margin: 103px 0 0 9px;
+            font-size: 14px;
+        }
+
+        #city,
+        #state {
+            color: #fff;
+            z-index: 1001;
+        }
+
+        #result {
+            color: #fff;
+            z-index: 1001;
+            font-size: medium;
+            font-weight: bold;
+        }
+
+        #weather {
+            width: 300px;
+            height: 250px;
+            position: relative;
+            text-align: center;
+            z-index: 105;
+        }
+
+        #clickArea {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 999;
+            cursor: pointer;
+        }
+    </style>
+
+    <script language="javascript" type="text/javascript">
+        var clickTag = "https://www.pec.coop/news/2023/pecs-power-rush-hour-encourages-summer-conservation/";
+    </script>
+</head>
+
+<body>
+    <div id="clickArea" class="clickTag" style="width: 100%; height: 100%">
+        <div id="location">It's <span id="result"></span> in <span id="city">Loading...</span><span id="currentTime"></span></div>
+        <img src="/images/Temperature_300x250.jpg" width="300" height="250" style="border-width:0; height:auto; display:block;">
+    </div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+$(document).ready(function () {
+
+        async function fetchIPAddress() {
+            try {
+                const response = await fetch('/geolate');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                let lat = data.location.latitude;
+                let long = data.location.longitude;
+                let city = data.city.names.en;
+
+                // Weather API URL
+                var weatherApiKey = '740f4f2d840f4e568f4f2d840fce5629';
+                var weatherUrl = `https://api.weather.com/v3/wx/observations/current?geocode=${lat},${long}&units=e&language=en-US&format=json&apiKey=${weatherApiKey}`;
+                console.log(weatherUrl);
+
+                // Fetch weather data
+                const weatherResponse = await fetch(weatherUrl);
+                if (!weatherResponse.ok) {
+                    throw new Error(`HTTP error! Status: ${weatherResponse.status}`);
+                }
+
+                const weatherData = await weatherResponse.json();
+                let temperature = weatherData.temperature;
+                let weatherDescription = weatherData.wxPhraseLong;
+
+                // Display the weather and city information
+                document.querySelector("#result").innerText = `${temperature} °F - ${weatherDescription}`;
+                document.querySelector("#city").innerText = city;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Immediately invoke the fetchIPAddress function
+        fetchIPAddress();
+
+        // Display current time
+        var dtime = new Date();
+        var minutes = dtime.getMinutes();
+        var formattedMinutes = (minutes < 10) ? "0" + minutes : minutes;
+        var hours = dtime.getHours();
+        var formattedHours = (hours % 12 || 12); // Convert to 12-hour format
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        $('#currentTime').text(" at " + formattedHours + ":" + formattedMinutes + " " + ampm);
+});
+
+    </script>
+
+    <script>
+        function getQueryStringValue(key) {
+            return unescape(window.location.search.replace(
+                new RegExp("^(?:.*[&\\?]"
+                    + escape(key).replace(/[\.\+\*]/g, "\\$&")
+                    + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        }
+
+        var trackingUrl = getQueryStringValue("trackurl");
+        var resURL = trackingUrl + clickTag;
+        document.getElementById("clickArea").addEventListener("click", function () {
+            console.log(resURL)
+            window.open(resURL, '_blank');
+        });
+    </script>
+</body>
+
+</html>
