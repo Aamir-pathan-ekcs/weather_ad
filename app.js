@@ -15,8 +15,8 @@ app.use(cors())
 app.get("/", (req,res)=>{
   
   let ip = requestIp.getClientIp(req)
-  var geo = geoip.lookup(ip);
-  res.json(geo)
+//   var geo = geoip.lookup(ip);
+  res.json(ip)
 })
 
 // const dbPath = './GeoLite2-City.mmdb';
