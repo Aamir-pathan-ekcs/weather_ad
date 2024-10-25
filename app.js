@@ -20,14 +20,12 @@ app.get('/geolate', async (req, res) => {
             console.log('MMDB file exists!');
 
             const lookup = await maxmind.open(dbPath);
-            // console.log('MMDB file successfully opened');
             const dip = requestIp.getClientIp(req);
             const geoData = lookup.get(dip);
             if (!geoData) {
                 console.error('No geolocation data found for IP:', ip);
                 res.status(404).json({ error: 'No geolocation data found for IP' });
             } else {
-                // console.log('GeoData for IP:', geoData);
                 res.json(geoData);
             }
 
