@@ -3,7 +3,6 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
-    "geoip-lite": "^1.4.10",
     "maxmind": "^4.3.22",
     "path": "^0.12.7",
     "request-ip": "^3.3.0"
